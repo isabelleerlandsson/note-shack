@@ -1,0 +1,36 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 50px;
+  }
+  
+  .noteContainer {
+    width: 400px;
+    padding: 20px;
+    background-color: #92dc84; /* Ljusgul färg för post-it */
+    border: 2px solid #ade8b5; /* Gul färg för post-it-kant */
+  }
+  
+  .form {
+    margin-top: 20px;
+  }
+  
+  .input,
+  .textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .button {
+    background-color: #28773b;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .button:hover {
+    background-color: #369c45;
+  }
