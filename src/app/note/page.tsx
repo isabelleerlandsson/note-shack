@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import styles from "./note.module.css";
-import NoteList from "../note-list/page";
 
 interface Note {
   _id: string;
