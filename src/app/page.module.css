@@ -51,4 +51,8 @@
   border: none;
 
 }
-  
+
+.link {
+  z-index: 1;
+  padding-top: 3rem;
+}
