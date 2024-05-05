@@ -29,7 +29,7 @@ const CreateAccount: React.FC<CreateAccountProps> = ({ onSubmit }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/register", {
+      const response = await fetch("http://localhost:5001/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,7 +38,7 @@ const CreateAccount: React.FC<CreateAccountProps> = ({ onSubmit }) => {
       });
       const data = await response.json();
       console.log("Ny användare skapad:", data);
-      window.location.href = "/create-note";
+      window.location.href = "/note-list";
     } catch (error) {
       console.error("Fel vid skapande av användare:", error);
     }

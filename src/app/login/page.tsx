@@ -12,13 +12,13 @@ const LoginForm = () => {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/login", {
+      const response = await axios.post("http://localhost:5001/auth/login", {
         username,
         password,
       });
       const token = response.data.token;
       localStorage.setItem("token", token);
-      window.location.href = "/note";
+      window.location.href = "/note-list";
     } catch (error) {
       setError("Fel användarnamn eller lösenord");
     }

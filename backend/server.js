@@ -5,6 +5,15 @@ const session = require("express-session");
 
 const app = express();
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  next();
+});
+
 app.use(bodyParser.json());
 
 app.use(
@@ -19,7 +28,7 @@ const db = require("../src/db.js");
 db.connect();
 
 const authRoutes = require("../backend/routes/authRoutes.js");
-app.use("/api", authRoutes);
+app.use("/auth", authRoutes);
 
 mongoose.connect("mongodb://localhost/todo-db", {
   useNewUrlParser: true,

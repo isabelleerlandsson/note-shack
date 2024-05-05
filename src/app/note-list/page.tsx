@@ -16,11 +16,21 @@ const NoteList: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const handleCreateNote = async (title: string, content: string) => {
+    const token = localStorage.getItem("token");
+
     try {
-      const response = await axios.post<Note>("http://localhost:3000/notes", {
-        title,
-        content,
-      });
+      const response = await axios.post<Note>(
+        "http://localhost:5001/notes",
+        {
+          title,
+          content,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       console.log("Note created:", response.data);
       setNotes((prevNotes) => [...prevNotes, response.data]);
     } catch (error) {
@@ -34,7 +44,12 @@ const NoteList: React.FC = () => {
 
   const fetchNotes = async () => {
     try {
-      const response = await axios.get<Note[]>("http://localhost:3000/notes");
+      const token = localStorage.getItem("token");
+      const response = await axios.get<Note[]>("http://localhost:5001/notes", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setNotes(response.data);
       console.log(response.data);
       setLoading(false);

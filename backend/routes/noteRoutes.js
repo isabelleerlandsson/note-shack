@@ -4,10 +4,6 @@ const noteController = require("../controllers/noteController");
 
 router.post("/", noteController.createNote);
 
-router.get(
-  "/notes",
-  authController.authenticateUser,
-  noteController.getAllNotes
-);
+router.get("/", noteController.getAllNotes);
 
 module.exports = router;

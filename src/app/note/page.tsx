@@ -30,8 +30,7 @@ const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
     setContent(e.target.value);
   };
 
-  const handleNoteSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleNoteSubmit = async () => {
     console.log("Försöker skicka POST-förfrågan...");
     try {
       await handleCreateNote("", content);
@@ -72,7 +71,7 @@ const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
               <LiaExpandSolid />
             </div>
             <label className={styles.icons}>
-              <IoCheckmark />
+              <IoCheckmark onClick={handleNoteSubmit} />
               <VscClose />
             </label>
           </form>
