@@ -1,6 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import axios from "axios";
+import { TfiPlus as Plus } from "react-icons/tfi";
+import { VscClose } from "react-icons/vsc";
+import { IoCheckmark } from "react-icons/io5";
+import { LiaExpandSolid } from "react-icons/lia";
+
 import styles from "./note.module.css";
 
 interface Note {
@@ -14,61 +18,67 @@ interface CreateNoteProps {
 }
 
 const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
-  const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [prevNotes, setPrevNotes] = useState<Note[]>([]);
+  const [showInput, setShowInput] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handlePlusClick = () => {
+    setShowInput(true);
+  };
+
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
+  };
+
+  const handleNoteSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Försöker skicka POST-förfrågan...");
     try {
-      await handleCreateNote(title, content);
-      setTitle("");
+      await handleCreateNote("", content);
       setContent("");
+      setShowInput(false);
     } catch (error) {
       console.error("Error creating note:", error);
     }
   };
 
-  const createNote = async (title: string, content: string) => {
-    try {
-      const response = await axios.post<Note>("http://localhost:3000/notes", {
-        title,
-        content,
-      }); // Här lägger du till den fullständiga URL:en
-      console.log("Note created:", response.data);
-      setPrevNotes((prevNotes) => [...prevNotes, response.data]);
-    } catch (error) {
-      console.error("Error creating note:", error);
-    }
+  const toggleExpand = () => {
+    setExpanded(!expanded);
   };
 
   return (
-    <>
-      <div>
-        <h2>Create a New Note</h2>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>Titel:</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </div>
-          <div>
-            <label>Innehåll:</label>
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              required
-            ></textarea>
-          </div>
-          <button type="submit">Spara</button>
-        </form>
+    <div className={styles.container}>
+      <h1>Skapa anteckning</h1>
+      <div
+        className={`${styles.createNote} ${styles.icons}`}
+        onClick={handlePlusClick}
+      >
+        <Plus />
       </div>
-    </>
+      {showInput && (
+        <div
+          className={`${styles.expanded} ${styles.newNote} ${
+            expanded && styles.fullScreen
+          }`}
+        >
+          <form className={styles.form} onSubmit={handleNoteSubmit}>
+            <textarea
+              className={styles.textarea}
+              value={content}
+              onChange={handleContentChange}
+              autoFocus
+            />
+            <div className={styles.expander} onClick={toggleExpand}>
+              <LiaExpandSolid />
+            </div>
+            <label className={styles.icons}>
+              <IoCheckmark />
+              <VscClose />
+            </label>
+          </form>
+        </div>
+      )}
+    </div>
   );
 };
 
