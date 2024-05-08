@@ -38,3 +38,29 @@ exports.getAllNotes = async (req, res) => {
     res.status(500).json({ message: "Något gick fel" });
   }
 };
+
+exports.deleteNote = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = await verify(token, "jwt_secret_key");
+    const userId = decoded.userId;
+
+    const noteId = req.params.noteId;
+
+    const deletedNote = await Note.findOneAndDelete({
+      _id: noteId,
+      userid: userId,
+    });
+
+    if (!deletedNote) {
+      return res.status(404).json({ message: "Anteckning kunde inte hittas" });
+    }
+
+    res.status(200).json({ message: "Anteckning borttagen" });
+  } catch (error) {
+    console.error("Error deleting note:", error);
+    res
+      .status(500)
+      .json({ message: "Ett fel uppstod vid borttagning av anteckning" });
+  }
+};
