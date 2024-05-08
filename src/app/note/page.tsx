@@ -1,18 +1,17 @@
 "use client";
 import React, { useState } from "react";
-import { TfiPlus as Plus } from "react-icons/tfi";
-import { VscClose } from "react-icons/vsc";
-import { IoCheckmark } from "react-icons/io5";
-import { LiaExpandSolid } from "react-icons/lia";
+import { PiNotePencilLight as Plus } from "react-icons/pi";
+import { VscClose as Close } from "react-icons/vsc";
+import { IoCheckmark as Save } from "react-icons/io5";
 
 import styles from "./note.module.css";
+import EditBar from "@/components/EditBar/page";
 
 interface Note {
   _id: string;
   title: string;
   content: string;
 }
-
 interface CreateNoteProps {
   handleCreateNote: (title: string, content: string) => Promise<void>;
 }
@@ -20,7 +19,6 @@ interface CreateNoteProps {
 const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
   const [content, setContent] = useState("");
   const [showInput, setShowInput] = useState(false);
-  const [expanded, setExpanded] = useState(false);
 
   const handlePlusClick = () => {
     setShowInput(true);
@@ -31,7 +29,6 @@ const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
   };
 
   const handleNoteSubmit = async () => {
-    console.log("Försöker skicka POST-förfrågan...");
     try {
       await handleCreateNote("", content);
       setContent("");
@@ -41,8 +38,8 @@ const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
     }
   };
 
-  const toggleExpand = () => {
-    setExpanded(!expanded);
+  const handleClose = () => {
+    setShowInput(false);
   };
 
   return (
@@ -56,24 +53,24 @@ const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
       </div>
       {showInput && (
         <div
-          className={`${styles.expanded} ${styles.newNote} ${
-            expanded && styles.fullScreen
-          }`}
+          className={`${styles.expanded} ${styles.newNote} ${styles.fullScreen}`}
         >
           <form className={styles.form} onSubmit={handleNoteSubmit}>
+            <label className={`${styles.icons} ${styles.iconPosition}`}>
+              <div>
+                <EditBar />
+              </div>
+              <div>
+                <Save onClick={handleNoteSubmit} />
+                <Close onClick={handleClose} />
+              </div>
+            </label>
             <textarea
               className={styles.textarea}
               value={content}
               onChange={handleContentChange}
               autoFocus
             />
-            <div className={styles.expander} onClick={toggleExpand}>
-              <LiaExpandSolid />
-            </div>
-            <label className={styles.icons}>
-              <IoCheckmark onClick={handleNoteSubmit} />
-              <VscClose />
-            </label>
           </form>
         </div>
       )}

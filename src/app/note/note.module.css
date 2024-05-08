@@ -55,6 +55,12 @@
   font-size: 1.5rem;
 }
 
+.iconPosition {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+}
+
 .expander {
   position: absolute;
   top: 10px;
