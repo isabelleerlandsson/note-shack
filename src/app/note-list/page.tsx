@@ -46,18 +46,18 @@ const NoteList: React.FC = () => {
   };
 
   // EDIT NOTE
-  const editNote = async (noteId: string, currentContent: string) => {
+  const editNote = async (noteId: string, content: string) => {
     setEditingNote(noteId);
-    setEditedContent(currentContent);
+    setEditedContent(content);
   };
 
   // SAVE EDITED NOTE
-  const saveEditedNote = async (noteId: string) => {
+  const saveEditedNote = async (noteId: string, newContent?: string) => {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
         `http://localhost:5001/notes/${noteId}`,
-        { content: editedContent },
+        { content: newContent },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -68,14 +68,13 @@ const NoteList: React.FC = () => {
 
       setNotes((prevNotes) =>
         prevNotes.map((note) =>
-          note._id === noteId ? { ...note, content: editedContent } : note
+          note._id === noteId ? { ...note, content: newContent } : note
         )
       );
     } catch (error) {
       console.error("Error saving edited note:", error);
     }
   };
-
   useEffect(() => {
     fetchNotes();
   }, []);
@@ -139,9 +138,27 @@ const NoteList: React.FC = () => {
               }`}
             >
               <div className={styles.actions}>
-                <EditBar />
-                <Trash onClick={() => deleteNote(note._id)} />
-                <Expand onClick={() => expandNote(note._id)} />
+                {expandedNote === note._id && (
+                  <div>
+                    <EditBar />
+                  </div>
+                )}
+                <div>
+                  {expandedNote === note._id && (
+                    <Trash
+                      className={styles.icons}
+                      onClick={() => deleteNote(note._id)}
+                      title="Radera"
+                    />
+                  )}
+                  <Expand
+                    className={`${styles.icons} ${
+                      expandedNote === note._id ? "" : styles.expandIcon
+                    }`}
+                    onClick={() => expandNote(note._id)}
+                    title="Expandera"
+                  />
+                </div>
               </div>
 
               <div className={styles.noteContent}>
@@ -154,15 +171,22 @@ const NoteList: React.FC = () => {
                           suppressContentEditableWarning={true}
                           className={styles.customEditableText}
                           onBlur={(e) => {
+                            const newContent = e.target.textContent;
                             setEditingNote(null);
-                            saveEditedNote(note._id);
+                            saveEditedNote(note._id, newContent);
                           }}
                         >
                           {note.content}
                         </p>
                         <div className={styles.iconContainer}>
-                          <Save onClick={() => saveEditedNote(note._id)} />
-                          <Close onClick={() => setEditingNote(null)} />
+                          <Save
+                            onClick={() => saveEditedNote(note._id)}
+                            title="Spara ändringar"
+                          />
+                          <Close
+                            onClick={() => setEditingNote(null)}
+                            title="Ångra ändringar"
+                          />
                         </div>
                       </div>
                     ) : (
