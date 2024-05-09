@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { PiNotePencilLight as Plus } from "react-icons/pi";
+import { PiNotePencilLight as NewNote } from "react-icons/pi";
 import { VscClose as Close } from "react-icons/vsc";
 import { IoCheckmark as Save } from "react-icons/io5";
 
@@ -49,7 +49,7 @@ const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
         className={`${styles.createNote} ${styles.icons}`}
         onClick={handlePlusClick}
       >
-        <Plus />
+        <NewNote title="Skapa en ny anteckning" />
       </div>
       {showInput && (
         <div
@@ -61,8 +61,8 @@ const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
                 <EditBar />
               </div>
               <div>
-                <Save onClick={handleNoteSubmit} />
-                <Close onClick={handleClose} />
+                <Save onClick={handleNoteSubmit} title="Spara anteckning" />
+                <Close onClick={handleClose} title="Stäng" />
               </div>
             </label>
             <textarea
