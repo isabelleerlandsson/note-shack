@@ -4,9 +4,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import CreateNote from "../note/page";
 import styles from "./note-list.module.css";
-import { VscEdit as Edit } from "react-icons/vsc";
-import { TfiCheck as Save } from "react-icons/tfi";
 import { PiTrashLight as Trash } from "react-icons/pi";
+import { VscClose as Close } from "react-icons/vsc";
+import { IoCheckmark as Save } from "react-icons/io5";
+import { LiaExpandSolid as Expand } from "react-icons/lia";
 
 import EditBar from "@/components/EditBar/page";
 
@@ -41,6 +42,37 @@ const NoteList: React.FC = () => {
       setNotes((prevNotes) => [...prevNotes, response.data]);
     } catch (error) {
       console.error("Error creating note:", error);
+    }
+  };
+
+  // EDIT NOTE
+  const editNote = async (noteId: string, currentContent: string) => {
+    setEditingNote(noteId);
+    setEditedContent(currentContent);
+  };
+
+  // SAVE EDITED NOTE
+  const saveEditedNote = async (noteId: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `http://localhost:5001/notes/${noteId}`,
+        { content: editedContent },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setEditingNote(null);
+
+      setNotes((prevNotes) =>
+        prevNotes.map((note) =>
+          note._id === noteId ? { ...note, content: editedContent } : note
+        )
+      );
+    } catch (error) {
+      console.error("Error saving edited note:", error);
     }
   };
 
@@ -83,7 +115,6 @@ const NoteList: React.FC = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      // Ta bort anteckningen från lokal state
       setNotes((prevNotes) => prevNotes.filter((note) => note._id !== noteId));
     } catch (error) {
       console.error("Error deleting note:", error);
@@ -96,7 +127,7 @@ const NoteList: React.FC = () => {
 
       <div className={styles.allNotes}>
         <h2>Alla anteckningar</h2>
-        {loading && <p>Loading...</p>}
+        {loading}
         {error && <p>{error}</p>}
 
         <div className={styles.noteList}>
@@ -106,22 +137,42 @@ const NoteList: React.FC = () => {
               className={`${styles.note} ${
                 expandedNote === note._id && styles.fullScreen
               }`}
-              onClick={() => expandNote(note._id)}
             >
-              {expandedNote === note._id && (
-                <div className={styles.actions}>
-                  <EditBar />
-                  <Trash onClick={() => deleteNote(note._id)} />
-                </div>
-              )}
+              <div className={styles.actions}>
+                <EditBar />
+                <Trash onClick={() => deleteNote(note._id)} />
+                <Expand onClick={() => expandNote(note._id)} />
+              </div>
 
               <div className={styles.noteContent}>
-                {editingNote === note._id ? (
-                  <textarea
-                    className={styles.textarea}
-                    value={editedContent}
-                    onChange={(e) => setEditedContent(e.target.value)}
-                  />
+                {expandedNote === note._id ? (
+                  <>
+                    {editingNote === note._id ? (
+                      <div className={styles.editableText}>
+                        <p
+                          contentEditable="true"
+                          suppressContentEditableWarning={true}
+                          className={styles.customEditableText}
+                          onBlur={(e) => {
+                            setEditingNote(null);
+                            saveEditedNote(note._id);
+                          }}
+                        >
+                          {note.content}
+                        </p>
+                        <div className={styles.iconContainer}>
+                          <Save onClick={() => saveEditedNote(note._id)} />
+                          <Close onClick={() => setEditingNote(null)} />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className={styles.editableText}>
+                        <p onClick={() => editNote(note._id, note.content)}>
+                          {note.content}
+                        </p>
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <p>{note.content}</p>
                 )}

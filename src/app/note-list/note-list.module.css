@@ -56,3 +56,12 @@
   .noteIcons {
     margin: 0.4rem;
 }
+
+.customEditableText {
+    margin: 0; 
+    padding: 0;
+    outline: none; 
+    border: none; 
+    cursor: text;
+  }
+  
