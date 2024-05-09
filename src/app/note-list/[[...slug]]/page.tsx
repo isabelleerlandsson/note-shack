@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import CreateNote from "../note/page";
+import CreateNote from "../../note/page";
 import styles from "./note-list.module.css";
 import { PiTrashLight as Trash } from "react-icons/pi";
 import { VscClose as Close } from "react-icons/vsc";
 import { IoCheckmark as Save } from "react-icons/io5";
 import { LiaExpandSolid as Expand } from "react-icons/lia";
+import { useRouter, usePathname } from "next/navigation";
 
 import EditBar from "@/components/EditBar/page";
 
@@ -24,6 +25,9 @@ const NoteList: React.FC = () => {
   const [expandedNote, setExpandedNote] = useState<string | null>(null);
   const [editingNote, setEditingNote] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState<string>("");
+
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handleCreateNote = async (title: string, content: string) => {
     const token = localStorage.getItem("token");
@@ -75,9 +79,24 @@ const NoteList: React.FC = () => {
       console.error("Error saving edited note:", error);
     }
   };
+  const setExpandedFromLink = () => {
+    if (!pathname) {
+      return;
+    }
+    const noteId = pathname.split("/").pop();
+    if (noteId) {
+      setExpandedNote(noteId);
+    } else {
+      setExpandedNote(null);
+    }
+  };
   useEffect(() => {
     fetchNotes();
   }, []);
+
+  useEffect(() => {
+    setExpandedFromLink();
+  }, [notes]);
 
   const fetchNotes = async () => {
     try {
@@ -99,9 +118,9 @@ const NoteList: React.FC = () => {
   // EXPAND NOTE
   const expandNote = (noteId: string) => {
     if (expandedNote === noteId) {
-      setExpandedNote(null);
+      router.push(`/note-list/`);
     } else {
-      setExpandedNote(noteId);
+      router.push(`/note-list/${noteId}`);
     }
   };
 
