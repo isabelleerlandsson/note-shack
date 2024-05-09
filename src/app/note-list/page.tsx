@@ -121,7 +121,7 @@ const NoteList: React.FC = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <>
       <CreateNote handleCreateNote={handleCreateNote} />
 
       <div className={styles.allNotes}>
@@ -134,7 +134,7 @@ const NoteList: React.FC = () => {
             <div
               key={note._id}
               className={`${styles.note} ${
-                expandedNote === note._id && styles.fullScreen
+                expandedNote === note._id && styles.expand
               }`}
             >
               <div className={styles.actions}>
@@ -161,15 +161,15 @@ const NoteList: React.FC = () => {
                 </div>
               </div>
 
-              <div className={styles.noteContent}>
+              <>
                 {expandedNote === note._id ? (
                   <>
                     {editingNote === note._id ? (
-                      <div className={styles.editableText}>
+                      <div>
                         <p
                           contentEditable="true"
                           suppressContentEditableWarning={true}
-                          className={styles.customEditableText}
+                          className={styles.editText}
                           onBlur={(e) => {
                             const newContent = e.target.textContent;
                             setEditingNote(null);
@@ -178,34 +178,36 @@ const NoteList: React.FC = () => {
                         >
                           {note.content}
                         </p>
-                        <div className={styles.iconContainer}>
+                        <>
                           <Save
                             onClick={() => saveEditedNote(note._id)}
                             title="Spara ändringar"
+                            className={styles.icons}
                           />
                           <Close
                             onClick={() => setEditingNote(null)}
                             title="Ångra ändringar"
+                            className={styles.icons}
                           />
-                        </div>
+                        </>
                       </div>
                     ) : (
-                      <div className={styles.editableText}>
+                      <>
                         <p onClick={() => editNote(note._id, note.content)}>
                           {note.content}
                         </p>
-                      </div>
+                      </>
                     )}
                   </>
                 ) : (
                   <p>{note.content}</p>
                 )}
-              </div>
+              </>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
