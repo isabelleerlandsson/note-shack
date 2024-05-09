@@ -8,6 +8,7 @@ import { PiTrashLight as Trash } from "react-icons/pi";
 import { VscClose as Close } from "react-icons/vsc";
 import { IoCheckmark as Save } from "react-icons/io5";
 import { LiaExpandSolid as Expand } from "react-icons/lia";
+import { IoShareSocialOutline as Share } from "react-icons/io5";
 
 import EditBar from "@/components/EditBar/page";
 
@@ -145,11 +146,14 @@ const NoteList: React.FC = () => {
                 )}
                 <div>
                   {expandedNote === note._id && (
-                    <Trash
-                      className={styles.icons}
-                      onClick={() => deleteNote(note._id)}
-                      title="Radera"
-                    />
+                    <>
+                      <Trash
+                        className={styles.icons}
+                        onClick={() => deleteNote(note._id)}
+                        title="Radera"
+                      />
+                      <Share className={styles.icons} title="Dela" />
+                    </>
                   )}
                   <Expand
                     className={`${styles.icons} ${
