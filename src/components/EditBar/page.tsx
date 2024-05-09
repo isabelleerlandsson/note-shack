@@ -1,17 +1,20 @@
 import React from "react";
-import { IoColorPaletteOutline as Color } from "react-icons/io5";
+import { IoIosColorWand as Color } from "react-icons/io";
+import { BsLink45Deg as Link } from "react-icons/bs";
 import { PiGridFourLight as Grid } from "react-icons/pi";
+import { PiListChecksLight as Check } from "react-icons/pi";
+import { PiImages as Upload } from "react-icons/pi";
 
-type EditBarProps = {
-  children?: string;
-  type?: string;
-};
+import styles from "./editbar.module.css";
 
-const EditBar: React.FC<EditBarProps> = ({ children }) => {
+const EditBar = () => {
   return (
     <div>
-      <Color />
-      <Grid />
+      <Color className={styles.icons} title="Välj en färg" />
+      <Grid className={styles.icons} title="Lägg till en tabell" />
+      <Check className={styles.icons} title="Gör en checklista" />
+      <Link className={styles.icons} title="Lägg till en länk" />
+      <Upload className={styles.icons} title="Infoga bilaga" />
     </div>
   );
 };
