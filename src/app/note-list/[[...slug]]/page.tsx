@@ -10,6 +10,7 @@ import { IoCheckmark as Save } from "react-icons/io5";
 import { LiaExpandSolid as Expand } from "react-icons/lia";
 import { IoShareSocialOutline as Share } from "react-icons/io5";
 import { useRouter, usePathname } from "next/navigation";
+import Toast from "@/components/Toast/page";
 
 import EditBar from "@/components/EditBar/page";
 
@@ -26,6 +27,8 @@ const NoteList: React.FC = () => {
   const [expandedNote, setExpandedNote] = useState<string | null>(null);
   const [editingNote, setEditingNote] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState<string>("");
+  const [showToast, setShowToast] = useState(false); // State för att visa eller dölja toast
+  const [toastMessage, setToastMessage] = useState("");
 
   const router = useRouter();
   const pathname = usePathname();
@@ -91,6 +94,14 @@ const NoteList: React.FC = () => {
       setExpandedNote(null);
     }
   };
+
+  const copyURL = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setToastMessage("Länk kopierad till urklipp");
+      setShowToast(true);
+    });
+  };
+
   useEffect(() => {
     fetchNotes();
   }, []);
@@ -171,7 +182,21 @@ const NoteList: React.FC = () => {
                         onClick={() => deleteNote(note._id)}
                         title="Radera"
                       />
-                      <Share className={styles.icons} title="Dela" />
+                      {showToast && (
+                        <Toast
+                          message={toastMessage}
+                          onClose={() => setShowToast(false)}
+                        />
+                      )}
+
+                      <Share
+                        onClick={() => {
+                          const noteUrl = `${window.location.origin}/note-list/${note._id}`;
+                          copyURL(noteUrl);
+                        }}
+                        className={styles.icons}
+                        title="Kopiera URL"
+                      />
                     </>
                   )}
                   <Expand
