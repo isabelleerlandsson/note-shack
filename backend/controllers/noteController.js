@@ -64,3 +64,31 @@ exports.deleteNote = async (req, res) => {
       .json({ message: "Ett fel uppstod vid borttagning av anteckning" });
   }
 };
+
+exports.editNote = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = await verify(token, "jwt_secret_key");
+    const userId = decoded.userId;
+
+    const { title, content } = req.body;
+    const noteId = req.params.noteId;
+
+    const updatedNote = await Note.findByIdAndUpdate(
+      noteId,
+      { title, content },
+      { new: true }
+    );
+
+    if (!updatedNote) {
+      return res.status(404).json({ message: "Anteckning kunde inte hittas" });
+    }
+
+    res.status(200).json(updatedNote);
+  } catch (error) {
+    console.error("Error editing note:", error);
+    res
+      .status(500)
+      .json({ message: "Ett fel uppstod vid redigering av anteckning" });
+  }
+};
