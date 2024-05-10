@@ -71,12 +71,12 @@ exports.editNote = async (req, res) => {
     const decoded = await verify(token, "jwt_secret_key");
     const userId = decoded.userId;
 
-    const { title, content } = req.body;
+    const { title, content, color } = req.body;
     const noteId = req.params.noteId;
 
     const updatedNote = await Note.findByIdAndUpdate(
       noteId,
-      { title, content },
+      { title, content, color },
       { new: true }
     );
 
