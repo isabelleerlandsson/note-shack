@@ -35,13 +35,20 @@ const NoteList: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleCreateNote = async (title: string, content: string) => {
+  const handleCreateNote = async (
+    title: string,
+    content: string,
+    color: string
+  ) => {
     const token = localStorage.getItem("token");
+
+    console.log("handleCreateNote");
+    console.log(color);
 
     try {
       const response = await axios.post<Note>(
         "http://localhost:5001/notes",
-        { title, content },
+        { title, content, color },
         {
           headers: {
             Authorization: `Bearer ${token}`,

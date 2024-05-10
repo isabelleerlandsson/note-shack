@@ -11,11 +11,12 @@ exports.createNote = async (req, res) => {
     const decoded = await verify(token, "jwt_secret_key");
     const userId = decoded.userId;
 
-    const { title, content } = req.body;
+    const { title, content, color } = req.body;
     const newNote = new Note({
       userid: userId,
       title,
       content,
+      color,
     });
     await newNote.save();
     res.status(201).json(newNote);

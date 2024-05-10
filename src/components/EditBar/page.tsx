@@ -16,10 +16,12 @@ const EditBar = ({ onColorChange, noteId }) => {
   };
 
   const colorOptions = [
-    { value: "red", label: "Röd" },
-    { value: "blue", label: "Blå" },
-    { value: "green", label: "Grön" },
-    { value: "yellow", label: "Gul" },
+    { value: "#f5b6da" },
+    { value: "#E1BEE7" },
+    { value: "#BBDEFB" },
+    { value: "#ade8b5" },
+    { value: "#FFF9C4" },
+    { value: "#FFE0B2" },
   ];
 
   return (
