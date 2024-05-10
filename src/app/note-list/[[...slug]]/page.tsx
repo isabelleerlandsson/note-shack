@@ -18,6 +18,7 @@ interface Note {
   _id: string;
   title: string;
   content: string;
+  color: string;
 }
 
 const NoteList: React.FC = () => {
@@ -27,8 +28,9 @@ const NoteList: React.FC = () => {
   const [expandedNote, setExpandedNote] = useState<string | null>(null);
   const [editingNote, setEditingNote] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState<string>("");
-  const [showToast, setShowToast] = useState(false); // State för att visa eller dölja toast
+  const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [noteColor, setColor] = useState({});
 
   const router = useRouter();
   const pathname = usePathname();
@@ -151,6 +153,29 @@ const NoteList: React.FC = () => {
     }
   };
 
+  // CHANGE COLOR
+  const changeColor = async (noteId: string, newColor?: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `http://localhost:5001/notes/${noteId}`,
+        { color: newColor },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setColor((prevColors) => ({
+        ...prevColors,
+        [noteId]: newColor,
+      }));
+    } catch (error) {
+      console.error("Error changing color:", error);
+    }
+  };
+
   return (
     <>
       <CreateNote handleCreateNote={handleCreateNote} />
@@ -167,11 +192,12 @@ const NoteList: React.FC = () => {
               className={`${styles.note} ${
                 expandedNote === note._id && styles.expand
               }`}
+              style={{ backgroundColor: noteColor[note._id] || note.color }}
             >
               <div className={styles.actions}>
                 {expandedNote === note._id && (
                   <div>
-                    <EditBar />
+                    <EditBar noteId={note._id} onColorChange={changeColor} />
                   </div>
                 )}
                 <div>
