@@ -19,9 +19,6 @@ export default function App() {
         <Title />
         <div className={styles.circle}></div>
         <div className={styles.circleTwo}></div>
-        <Link className={styles.link} href={"/note"}>
-          <Button>Kom igång</Button>
-        </Link>
       </main>
     </>
   );
