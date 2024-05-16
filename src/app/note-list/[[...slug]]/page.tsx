@@ -13,6 +13,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Toast from "@/components/Toast/page";
 
 import EditBar from "@/components/EditBar/page";
+import Navbar from "@/components/Navbar/page";
 
 interface Note {
   _id: string;
@@ -185,6 +186,7 @@ const NoteList: React.FC = () => {
 
   return (
     <>
+      <Navbar />
       <CreateNote handleCreateNote={handleCreateNote} />
 
       <div className={styles.allNotes}>
