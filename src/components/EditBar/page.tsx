@@ -7,6 +7,9 @@ import { PiImages as Upload } from "react-icons/pi";
 
 import styles from "./editbar.module.css";
 
+const getCSSVariable = (variableName: string) =>
+  getComputedStyle(document.documentElement).getPropertyValue(variableName);
+
 const EditBar = ({ onColorChange, noteId }) => {
   const [selectedColor, setSelectedColor] = useState();
 
@@ -16,12 +19,24 @@ const EditBar = ({ onColorChange, noteId }) => {
   };
 
   const colorOptions = [
-    { value: "#f5b6da" },
-    { value: "#E1BEE7" },
-    { value: "#BBDEFB" },
-    { value: "#ade8b5" },
-    { value: "#FFF9C4" },
-    { value: "#FFE0B2" },
+    {
+      value: getCSSVariable("--note-pink"),
+    },
+    {
+      value: getCSSVariable("--note-purple"),
+    },
+    {
+      value: getCSSVariable("--note-blue"),
+    },
+    {
+      value: getCSSVariable("--note-green"),
+    },
+    {
+      value: getCSSVariable("--note-yellow"),
+    },
+    {
+      value: getCSSVariable("--note-orange"),
+    },
   ];
 
   return (
