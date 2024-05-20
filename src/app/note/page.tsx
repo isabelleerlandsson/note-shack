@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { PiNotePencilLight as NewNote } from "react-icons/pi";
 import { VscClose as Close } from "react-icons/vsc";
 import { IoCheckmark as Save } from "react-icons/io5";
-import axios from "axios";
 
 import styles from "./note.module.css";
 import EditBar from "@/components/EditBar/page";

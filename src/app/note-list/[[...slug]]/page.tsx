@@ -29,6 +29,7 @@ const NoteList: React.FC = () => {
   const [expandedNote, setExpandedNote] = useState<string | null>(null);
   const [editingNote, setEditingNote] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState<string>("");
+  const [originalContent, setOriginalContent] = useState<string>("");
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [noteColor, setColor] = useState({});
@@ -43,9 +44,6 @@ const NoteList: React.FC = () => {
   ) => {
     const token = localStorage.getItem("token");
 
-    console.log("handleCreateNote");
-    console.log(color);
-
     try {
       const response = await axios.post<Note>(
         "http://localhost:5001/notes",
@@ -56,7 +54,6 @@ const NoteList: React.FC = () => {
           },
         }
       );
-      console.log("Note created:", response.data);
       setNotes((prevNotes) => [...prevNotes, response.data]);
     } catch (error) {
       console.error("Error creating note:", error);
@@ -66,6 +63,7 @@ const NoteList: React.FC = () => {
   // EDIT NOTE
   const editNote = async (noteId: string, content: string) => {
     setEditingNote(noteId);
+    setOriginalContent(content);
     setEditedContent(content);
   };
 
@@ -93,6 +91,7 @@ const NoteList: React.FC = () => {
       console.error("Error saving edited note:", error);
     }
   };
+
   const setExpandedFromLink = () => {
     if (!pathname) {
       return;
@@ -184,6 +183,11 @@ const NoteList: React.FC = () => {
     }
   };
 
+  const handleClose = () => {
+    setEditingNote(null);
+    setEditedContent(originalContent);
+  };
+
   return (
     <>
       <Navbar />
@@ -253,22 +257,20 @@ const NoteList: React.FC = () => {
                           contentEditable="true"
                           suppressContentEditableWarning={true}
                           className={styles.editText}
-                          onBlur={(e) => {
-                            const newContent = e.target.textContent;
-                            setEditingNote(null);
-                            saveEditedNote(note._id, newContent);
-                          }}
+                          onBlur={(e) => setEditedContent(e.target.textContent)}
                         >
                           {note.content}
                         </p>
                         <>
                           <Save
-                            onClick={() => saveEditedNote(note._id)}
+                            onClick={() =>
+                              saveEditedNote(note._id, editedContent)
+                            }
                             title="Spara ändringar"
                             className={styles.icons}
                           />
                           <Close
-                            onClick={() => setEditingNote(null)}
+                            onClick={handleClose}
                             title="Ångra ändringar"
                             className={styles.icons}
                           />
