@@ -62,7 +62,6 @@ const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
 
   return (
     <div className={styles.container}>
-      <h1>Skapa anteckning</h1>
       <div
         className={`${styles.createNote} ${styles.icons}`}
         onClick={handlePlusClick}
@@ -71,7 +70,7 @@ const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
       </div>
       {showInput && (
         <div
-          className={`${styles.expanded} ${styles.newNote} ${styles.fullScreen}`}
+          className={`${styles.newNote} ${styles.fullScreen}`}
           style={{ backgroundColor: noteColor }}
         >
           <form className={styles.form} onSubmit={handleNoteSubmit}>
