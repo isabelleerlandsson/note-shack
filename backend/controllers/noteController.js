@@ -12,6 +12,9 @@ exports.createNote = async (req, res) => {
     const userId = decoded.userId;
 
     const { title, content, color } = req.body;
+
+    console.log(content);
+
     const newNote = new Note({
       userid: userId,
       title,

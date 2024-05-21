@@ -15,12 +15,39 @@ import Toast from "@/components/Toast/page";
 import EditBar from "@/components/EditBar/page";
 import Navbar from "@/components/Navbar/page";
 
+import { createReactEditorJS } from "react-editor-js";
+import CheckList from "@editorjs/checklist";
+import List from "@editorjs/list";
+import Table from "@editorjs/table";
+
+const ReactEditorJS = createReactEditorJS();
+
 interface Note {
   _id: string;
   title: string;
-  content: string;
+  content: {};
   color: string;
 }
+
+const convertBlocksToText = (blocks) => {
+  return blocks
+    .map((block) => {
+      switch (block.type) {
+        case "paragraph":
+          const linkMatch = block.data.text.match(/<a[^>]*href="([^"]*)"/);
+          return linkMatch ? linkMatch[1] : block.data.text;
+        case "header":
+          return block.data.text;
+        case "list":
+          return block.data.items.join("\n");
+        case "checkList":
+          return block.data.items[0].text + "...";
+        default:
+          return "";
+      }
+    })
+    .join("\n");
+};
 
 const NoteList: React.FC = () => {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -97,7 +124,7 @@ const NoteList: React.FC = () => {
       return;
     }
     const noteId = pathname.split("/").pop();
-    if (noteId) {
+    if (noteId !== "note-list") {
       setExpandedNote(noteId);
     } else {
       setExpandedNote(null);
@@ -188,6 +215,15 @@ const NoteList: React.FC = () => {
     setEditedContent(originalContent);
   };
 
+  const editorRefs = React.useRef({});
+
+  const [, setEditorInstances] = useState({});
+
+  const handleInitialize = React.useCallback((instance, id) => {
+    editorRefs.current[id] = instance;
+    setEditorInstances({ ...editorRefs.current });
+  }, []);
+
   return (
     <>
       <Navbar />
@@ -211,6 +247,9 @@ const NoteList: React.FC = () => {
                 {expandedNote === note._id && (
                   <div>
                     <EditBar noteId={note._id} onColorChange={changeColor} />
+                    <br />
+                    <br />
+                    <br />
                   </div>
                 )}
                 <div>
@@ -253,19 +292,35 @@ const NoteList: React.FC = () => {
                   <>
                     {editingNote === note._id ? (
                       <div>
-                        <p
-                          contentEditable="true"
+                        <div
+                          contentEditable="false"
                           suppressContentEditableWarning={true}
                           className={styles.editText}
                           onBlur={(e) => setEditedContent(e.target.textContent)}
                         >
-                          {note.content}
-                        </p>
+                          <ReactEditorJS
+                            onInitialize={(instance) =>
+                              handleInitialize(instance, note._id)
+                            }
+                            defaultValue={{ blocks: note.content }}
+                            tools={{
+                              checkList: CheckList,
+                              list: List,
+                              table: Table,
+                            }}
+                          />
+                        </div>
                         <>
                           <Save
-                            onClick={() =>
-                              saveEditedNote(note._id, editedContent)
-                            }
+                            onClick={async () => {
+                              const savedData = await editorRefs.current[
+                                note._id
+                              ].save();
+                              console.log("savedData");
+                              console.log(savedData);
+                              const blocks = savedData["blocks"];
+                              saveEditedNote(note._id, blocks);
+                            }}
                             title="Spara ändringar"
                             className={styles.icons}
                           />
@@ -278,14 +333,24 @@ const NoteList: React.FC = () => {
                       </div>
                     ) : (
                       <>
-                        <p onClick={() => editNote(note._id, note.content)}>
-                          {note.content}
-                        </p>
+                        <div onClick={() => editNote(note._id, note.content)}>
+                          <ReactEditorJS
+                            defaultValue={{ blocks: note.content }}
+                            readOnly
+                            tools={{
+                              checkList: CheckList,
+                              list: List,
+                              table: Table,
+                            }}
+                          />
+                        </div>
                       </>
                     )}
                   </>
                 ) : (
-                  <p>{note.content}</p>
+                  expandedNote === null && (
+                    <p>{convertBlocksToText(note.content)}</p>
+                  )
                 )}
               </>
             </div>

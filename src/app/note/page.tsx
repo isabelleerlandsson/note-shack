@@ -4,8 +4,15 @@ import { PiNotePencilLight as NewNote } from "react-icons/pi";
 import { VscClose as Close } from "react-icons/vsc";
 import { IoCheckmark as Save } from "react-icons/io5";
 
+import { createReactEditorJS } from "react-editor-js";
+import CheckList from "@editorjs/checklist";
+import List from "@editorjs/list";
+import Table from "@editorjs/table";
+
 import styles from "./note.module.css";
 import EditBar from "@/components/EditBar/page";
+
+const ReactEditorJS = createReactEditorJS();
 
 interface Note {
   _id: string;
@@ -24,7 +31,13 @@ interface CreateNoteProps {
 const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
   const [content, setContent] = useState("");
   const [showInput, setShowInput] = useState(false);
-  const [noteColor, setColor] = useState("");
+  const [noteColor, setColor] = useState("#ade8b5");
+
+  const editorCore = React.useRef(null);
+
+  const handleInitialize = React.useCallback((instance) => {
+    editorCore.current = instance;
+  }, []);
 
   const handlePlusClick = () => {
     setShowInput(true);
@@ -36,10 +49,12 @@ const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
 
   const handleNoteSubmit = async () => {
     try {
-      console.log(noteColor);
-      await handleCreateNote("", content, noteColor);
+      const savedData = await editorCore.current.save();
+      const blocks = savedData["blocks"];
+
+      await handleCreateNote("", blocks, noteColor);
       setContent("");
-      setColor("");
+      setColor("#ade8b5");
       setShowInput(false);
     } catch (error) {
       console.error("Error creating note:", error);
@@ -82,11 +97,9 @@ const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
                 <Close onClick={handleClose} title="Stäng" />
               </div>
             </label>
-            <textarea
-              className={styles.textarea}
-              value={content}
-              onChange={handleContentChange}
-              autoFocus
+            <ReactEditorJS
+              onInitialize={handleInitialize}
+              tools={{ checkList: CheckList, list: List, table: Table }}
             />
           </form>
         </div>
