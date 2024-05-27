@@ -19,6 +19,12 @@ import { createReactEditorJS } from "react-editor-js";
 import CheckList from "@editorjs/checklist";
 import List from "@editorjs/list";
 import Table from "@editorjs/table";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400"],
+});
 
 const ReactEditorJS = createReactEditorJS();
 
@@ -238,7 +244,7 @@ const NoteList: React.FC = () => {
       <CreateNote handleCreateNote={handleCreateNote} />
 
       <div className={styles.allNotes}>
-        <h2>Alla anteckningar</h2>
+        <h2 className={poppins.className}>Alla anteckningar</h2>
         {loading}
         {error && <p>{error}</p>}
 

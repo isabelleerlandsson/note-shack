@@ -1,7 +1,7 @@
 .noteList {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 20px;
 }
 
@@ -11,6 +11,10 @@
   flex-direction: column;
   justify-content: center;
   padding: 2rem;
+
+}
+.allNotes h2 {
+  margin: 20px;
 }
 
 .note {
