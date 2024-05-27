@@ -226,13 +226,10 @@ const NoteList: React.FC = () => {
     setEditedContent(originalContent);
   };
 
-  // används för att hålla referenser till alla EditorJS-instanser.
   const editorRefs = React.useRef({});
 
-  // används för att uppdatera tillståndet med dessa instanser.
   const [, setEditorInstances] = useState({});
 
-  // spara referensen till varje EditorJS-instans när den initialiseras, så att instansen kan användas senare
   const handleInitialize = React.useCallback((instance, id) => {
     editorRefs.current[id] = instance;
     setEditorInstances({ ...editorRefs.current });
