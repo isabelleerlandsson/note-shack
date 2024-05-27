@@ -5,6 +5,7 @@ import Link from "next/link";
 import Logo from "@/assets/images/logo.svg";
 
 const Navbar = () => {
+  // LOG OUT
   const handleLogout = () => {
     localStorage.removeItem("token");
   };

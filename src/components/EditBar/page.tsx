@@ -66,9 +66,9 @@ const EditBar = ({ onColorChange, noteId }) => {
           ))}
         </div>
       </div>
-      <Grid className={styles.icons} title="Lägg till en tabell" />
+      {/* <Grid className={styles.icons} title="Lägg till en tabell" /> */}
 
-      <>
+      {/* <>
         <Check
           className={styles.icons}
           title="Gör en checklista"
@@ -91,10 +91,10 @@ const EditBar = ({ onColorChange, noteId }) => {
             )}
           </>
         )}
-      </>
+      </> */}
 
-      <Link className={styles.icons} title="Lägg till en länk" />
-      <Upload className={styles.icons} title="Infoga bilaga" />
+      {/* <Link className={styles.icons} title="Lägg till en länk" /> */}
+      {/* <Upload className={styles.icons} title="Infoga bilaga" /> */}
     </div>
   );
 };

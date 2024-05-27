@@ -60,9 +60,8 @@ const NoteList: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [noteColor, setColor] = useState({});
-
-  const router = useRouter();
-  const pathname = usePathname();
+  const router = useRouter(); // NAVIGATION TO DIFFERENT PAGES
+  const pathname = usePathname(); // GET CURRENT URL
 
   const handleCreateNote = async (
     title: string,
@@ -119,6 +118,7 @@ const NoteList: React.FC = () => {
     }
   };
 
+  // SET EXPANDED NOTE BASED ON URL
   const setExpandedFromLink = () => {
     if (!pathname) {
       return;
@@ -131,6 +131,12 @@ const NoteList: React.FC = () => {
     }
   };
 
+  // WHEN NOTES CHANGES AND CALLS setExpandedFromLink TO UPDATE EXPANDED NOTE
+  useEffect(() => {
+    setExpandedFromLink();
+  }, [notes]);
+
+  // COPY NOTE URL
   const copyURL = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
       setToastMessage("Länk kopierad till urklipp");
@@ -138,14 +144,7 @@ const NoteList: React.FC = () => {
     });
   };
 
-  useEffect(() => {
-    fetchNotes();
-  }, []);
-
-  useEffect(() => {
-    setExpandedFromLink();
-  }, [notes]);
-
+  // GET ALL NOTES
   const fetchNotes = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -162,6 +161,11 @@ const NoteList: React.FC = () => {
       setLoading(false);
     }
   };
+
+  // CALLS TO GET ALL NOTES FROM SERVER
+  useEffect(() => {
+    fetchNotes();
+  }, []);
 
   // EXPAND NOTE
   const expandNote = (noteId: string) => {
@@ -210,15 +214,19 @@ const NoteList: React.FC = () => {
     }
   };
 
+  // CLOSE EDITING OF NOTE AND KEEP ORIGINAL
   const handleClose = () => {
     setEditingNote(null);
     setEditedContent(originalContent);
   };
 
+  // används för att hålla referenser till alla EditorJS-instanser.
   const editorRefs = React.useRef({});
 
+  // används för att uppdatera tillståndet med dessa instanser.
   const [, setEditorInstances] = useState({});
 
+  // spara referensen till varje EditorJS-instans när den initialiseras, så att instansen kan användas senare
   const handleInitialize = React.useCallback((instance, id) => {
     editorRefs.current[id] = instance;
     setEditorInstances({ ...editorRefs.current });
@@ -247,9 +255,6 @@ const NoteList: React.FC = () => {
                 {expandedNote === note._id && (
                   <div>
                     <EditBar noteId={note._id} onColorChange={changeColor} />
-                    <br />
-                    <br />
-                    <br />
                   </div>
                 )}
                 <div>
@@ -302,7 +307,7 @@ const NoteList: React.FC = () => {
                             onInitialize={(instance) =>
                               handleInitialize(instance, note._id)
                             }
-                            defaultValue={{ blocks: note.content }}
+                            defaultValue={{ blocks: note.content as any }}
                             tools={{
                               checkList: CheckList,
                               list: List,
@@ -333,9 +338,13 @@ const NoteList: React.FC = () => {
                       </div>
                     ) : (
                       <>
-                        <div onClick={() => editNote(note._id, note.content)}>
+                        <div
+                          onClick={() =>
+                            editNote(note._id, note.content as any)
+                          }
+                        >
                           <ReactEditorJS
-                            defaultValue={{ blocks: note.content }}
+                            defaultValue={{ blocks: note.content as any }}
                             readOnly
                             tools={{
                               checkList: CheckList,

@@ -14,12 +14,6 @@ import EditBar from "@/components/EditBar/page";
 
 const ReactEditorJS = createReactEditorJS();
 
-interface Note {
-  _id: string;
-  title: string;
-  content: string;
-  color: string;
-}
 interface CreateNoteProps {
   handleCreateNote: (
     title: string,
@@ -35,18 +29,17 @@ const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
 
   const editorCore = React.useRef(null);
 
+  // INITIALIZE EDIT
   const handleInitialize = React.useCallback((instance) => {
     editorCore.current = instance;
   }, []);
 
+  // SHOW CREATE NEW NOTE FORM
   const handlePlusClick = () => {
     setShowInput(true);
   };
 
-  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(e.target.value);
-  };
-
+  // SEND NEW NOTE TO SERVER
   const handleNoteSubmit = async () => {
     try {
       const savedData = await editorCore.current.save();
@@ -61,6 +54,7 @@ const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
     }
   };
 
+  // CLOSE NEW NOTE WITHOUT SAVE
   const handleClose = () => {
     setShowInput(false);
   };
@@ -89,12 +83,14 @@ const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
         >
           <form className={styles.form} onSubmit={handleNoteSubmit}>
             <label className={`${styles.icons} ${styles.iconPosition}`}>
-              <div>
-                <EditBar noteId={null} onColorChange={changeColor} />
-              </div>
-              <div>
-                <Save onClick={handleNoteSubmit} title="Spara anteckning" />
-                <Close onClick={handleClose} title="Stäng" />
+              <div className={styles.editbar}>
+                <div>
+                  <EditBar noteId={null} onColorChange={changeColor} />
+                </div>
+                <div>
+                  <Save onClick={handleNoteSubmit} title="Spara anteckning" />
+                  <Close onClick={handleClose} title="Stäng" />
+                </div>
               </div>
             </label>
             <ReactEditorJS
