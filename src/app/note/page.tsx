@@ -83,14 +83,12 @@ const CreateNote: React.FC<CreateNoteProps> = ({ handleCreateNote }) => {
         >
           <form className={styles.form} onSubmit={handleNoteSubmit}>
             <label className={`${styles.icons} ${styles.iconPosition}`}>
-              <div className={styles.editbar}>
-                <div>
-                  <EditBar noteId={null} onColorChange={changeColor} />
-                </div>
-                <div>
-                  <Save onClick={handleNoteSubmit} title="Spara anteckning" />
-                  <Close onClick={handleClose} title="Stäng" />
-                </div>
+              <div>
+                <EditBar noteId={null} onColorChange={changeColor} />
+              </div>
+              <div>
+                <Save onClick={handleNoteSubmit} title="Spara anteckning" />
+                <Close onClick={handleClose} title="Stäng" />
               </div>
             </label>
             <ReactEditorJS

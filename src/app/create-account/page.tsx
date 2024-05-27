@@ -38,7 +38,7 @@ const CreateAccount: React.FC<CreateAccountProps> = ({ onSubmit }) => {
       });
       const data = await response.json();
       console.log("Ny användare skapad:", data);
-      window.location.href = "/note-list";
+      window.location.href = "/login";
     } catch (error) {
       console.error("Fel vid skapande av användare:", error);
     }
